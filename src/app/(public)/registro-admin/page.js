@@ -3,27 +3,27 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Registro() {
+export default function AdminRegistration() {
   const [userData, setUserData] = useState({
     name: "",
     email: "",
     password: "",
-    role: "PATIENT",
+    secret: "",
   });
 
   const router = useRouter();
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const res = await fetch("/api/auth/register", {
+    const res = await fetch("/api/auth/register-admin", {
       method: "POST",
       body: JSON.stringify(userData),
       headers: { "Content-Type": "application/json" },
     });
 
     if (res.ok) {
-      alert("Registro exitoso. Redirigiendo al login...");
-      router.push("/login"); // Redirigir al login después del registro exitoso
+      alert("Administrador registrado con éxito. Redirigiendo al login...");
+      router.push("/login");
     } else {
       const error = await res.json();
       alert(`Error: ${error.message}`);
@@ -36,7 +36,7 @@ export default function Registro() {
         onSubmit={handleRegister}
         className="bg-white p-8 rounded shadow-md w-80 space-y-4"
       >
-        <h1 className="text-2xl font-bold">Registro</h1>
+        <h1 className="text-2xl font-bold">Registro de Administrador</h1>
         <input
           type="text"
           placeholder="Nombre"
@@ -61,14 +61,14 @@ export default function Registro() {
           className="border w-full p-2 rounded"
           required
         />
-        <select
-          value={userData.role}
-          onChange={(e) => setUserData({ ...userData, role: e.target.value })}
+        <input
+          type="text"
+          placeholder="Clave Secreta"
+          value={userData.secret}
+          onChange={(e) => setUserData({ ...userData, secret: e.target.value })}
           className="border w-full p-2 rounded"
-        >
-          <option value="PATIENT">Paciente</option>
-          <option value="PROFESSIONAL">Profesional</option>
-        </select>
+          required
+        />
         <button
           type="submit"
           className="bg-green-500 text-white w-full p-2 rounded"

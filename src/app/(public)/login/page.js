@@ -42,6 +42,16 @@ export default function LoginPage() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="p-6">
+        <h1 className="text-2xl font-bold">Bienvenido a Equilibra</h1>
+        <p className="mt-4">Tu plataforma para la salud mental.</p>
+        <div className="items-center pl-20 py-5">
+        <a className="color-blue" href="../registro"> REGISTRATE</a>
+        </div>
+        <div className="items-center pl-20 py-5">
+        <a className="color-blue" href="./registro-admin"> REGISTRo ADMINISTRADORES</a>
+        </div>
+      </div>
       <form
         onSubmit={handleLogin}
         className="bg-white p-8 rounded shadow-md w-80 space-y-4"

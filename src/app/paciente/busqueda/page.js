@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import Navbar from "@/app/componentes/Navbar";
 import { useState } from "react";
 
@@ -7,7 +8,8 @@ export default function SearchProfessionals() {
   const [filters, setFilters] = useState({ specialty: "", availability: "" });
 
   const search = async () => {
-    const res = await fetch(`/api/paciente/busqueda?specialty=${filters.specialty}&availability=${filters.availability}`);
+    const query = new URLSearchParams(filters).toString();
+    const res = await fetch(`/api/paciente/busqueda?${query}`);
     const data = await res.json();
     setProfessionals(data);
   };
@@ -20,28 +22,34 @@ export default function SearchProfessionals() {
         <div className="mt-4">
           <input
             type="text"
-            placeholder="Especialidad"
+            placeholder="Especialidad (opcional)"
             value={filters.specialty}
             onChange={(e) => setFilters({ ...filters, specialty: e.target.value })}
             className="border p-2 rounded"
           />
           <input
             type="text"
-            placeholder="Disponibilidad"
+            placeholder="Disponibilidad (opcional)"
             value={filters.availability}
             onChange={(e) => setFilters({ ...filters, availability: e.target.value })}
             className="border p-2 rounded ml-2"
           />
-          <button onClick={search} className="bg-blue-500 text-white p-2 rounded ml-2">Buscar</button>
+          <button onClick={search} className="bg-blue-500 text-white p-2 rounded ml-2">
+            Buscar
+          </button>
         </div>
         <ul className="mt-4">
-          {professionals.map((prof) => (
-            <li key={prof.id} className="border p-4 mt-2 rounded">
-              <h2 className="font-bold">{prof.name}</h2>
-              <p>{prof.specialty}</p>
-              <p>{prof.availability}</p>
-            </li>
-          ))}
+          {professionals.length > 0 ? (
+            professionals.map((prof) => (
+              <li key={prof.id} className="border p-4 mt-2 rounded">
+                <h2 className="font-bold">{prof.name}</h2>
+                <p>Especialidad: {prof.specialty}</p>
+                <p>Disponibilidad: {prof.availability || "No especificada"}</p>
+              </li>
+            ))
+          ) : (
+            <p className="text-gray-600">No se encontraron profesionales.</p>
+          )}
         </ul>
       </div>
     </>
