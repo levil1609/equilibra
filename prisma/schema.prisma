@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  Patient   Patient?
+  Professional Professional?
+  createdAt DateTime @default(now())
+}
+
+model Patient {
+  id       Int    @id @default(autoincrement())
+  userId   Int    @unique
+  User     User   @relation(fields: [userId], references: [id])
+  Tests    Test[]
+  Appointments Appointment[]
+}
+
+model Professional {
+  id          Int    @id @default(autoincrement())
+  userId      Int    @unique
+  User        User   @relation(fields: [userId], references: [id])
+  specialty   String
+  biography   String
+  rate        Float
+  Appointments Appointment[]
+}
+
+model Appointment {
+  id            Int    @id @default(autoincrement())
+  patientId     Int
+  professionalId Int
+  date          DateTime
+  status        String
+  Payment       Payment?
+  Patient       Patient       @relation(fields: [patientId], references: [id])
+  Professional  Professional  @relation(fields: [professionalId], references: [id])
+}
+
+model Payment {
+  id             Int     @id @default(autoincrement())
+  appointmentId  Int    @unique
+  amount         Float
+  status         String
+  Appointment    Appointment @relation(fields: [appointmentId], references: [id])
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Test {
+  id        Int      @id @default(autoincrement())
+  patientId Int
+  result    String
+  questions Json
+  Patient   Patient @relation(fields: [patientId], references: [id])
+}
+
+enum Role {
+  PATIENT
+  PROFESSIONAL
+  ADMIN
+}
+
